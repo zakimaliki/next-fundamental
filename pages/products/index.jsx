@@ -1,18 +1,20 @@
 import { useRouter } from "next/router";
-import axios from "axios";
 import Link from "next/link";
 import ModalBootstrap from "../../components/Modal";
+import getProduct from "../../configs/redux/actions/productAction";
+import { useDispatch,useSelector } from "react-redux";
+import { useEffect } from "react";
 
-export async function getServerSideProps() {
-  const res = await axios.get(process.env.API_BACKEND+"products");
-  return {
-    props: { products: res.data.data },
-  };
-}
 
-const products = ({products}) => {
+const products = () => {
+
   const router = useRouter();
-
+  const dispatch = useDispatch()
+  const {product} = useSelector((state)=>state.product)
+  console.log(product);
+  useEffect(()=>{
+    dispatch(getProduct())
+},[])
   return (
     <div className="container">
       <h1>Product</h1>
@@ -30,17 +32,13 @@ const products = ({products}) => {
           </tr>
         </thead>
         <tbody>
-          {products.map((item, index) => (
+          {product.map((item, index) => (
             <tr key={item.id} className="text-center">
               <th scope="row">{index + 1}</th>
               <td>{item.name}</td>
               <td>{item.stock}</td>
               <td>{item.price}</td>
-              <td>
-                <a target="_blank" rel="noopener noreferrer" href={item.photo}>
-                  {item.photo}
-                </a>
-              </td>
+              <td><a target="_blank" rel="noopener noreferrer" href={item.photo}>{item.photo}</a></td>
               <td>{item.description}</td>
               <td className="text-center">
                 <Link href={`products/${item.id}`}>

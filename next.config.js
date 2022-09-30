@@ -4,4 +4,8 @@ const nextConfig = {
   swcMinify: true,
 }
 
-module.exports = nextConfig
+module.exports = {
+  env: {
+    API_BACKEND: process.env.API_BACKEND,
+  },
+};

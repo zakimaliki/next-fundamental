@@ -2,6 +2,10 @@ import React, { Fragment, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import createProduct from "../../configs/redux/actions/createProductAction";
+import updateProduct from "../../configs/redux/actions/updateProductAction";
+import deleteProduct from "../../configs/redux/actions/deleteProductAction";
 
 const ModalBootstrap = ({
   modaltype,
@@ -16,7 +20,7 @@ const ModalBootstrap = ({
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [saveImage, setSaveImage] = useState(null);
+  // const [saveImage, setSaveImage] = useState(null);
   function handleUpload(e) {
     console.log(e.target.files[0]);
     const uploader = e.target.files[0];
@@ -39,64 +43,16 @@ const ModalBootstrap = ({
 
   const handleSubmitCreate = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("stock", data.stock);
-    formData.append("price", data.price);
-    formData.append("photo", saveImage);
-    formData.append("description", data.description);
-    axios
-      .post("https://flat-songs-production.up.railway.app/api/v1/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        alert("update successful");
-        setShow(false);
-      })
-      .catch((err) => {
-        alert("update failed");
-        setShow(false);
-      });
+    dispatch(createProduct(data,saveImage,setShow))
   };
 
   const handleSubmitUpdate = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("stock", data.stock);
-    formData.append("price", data.price);
-    formData.append("photo", saveImage);
-    formData.append("description", data.description);
-    axios
-    .post("https://flat-songs-production.up.railway.app/api/v1/products", formData ,{
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-        alert("update successful");
-        setShow(false)
-      })
-      .catch((err) => {
-        alert("update failed");
-        setShow(false)
-      });
+    dispatch(updateProduct(data,id,saveImage,setShow))
   };
 
   const handleDelete = () => {
-    axios
-      .delete(process.env.REACT_APP_API_BACKEND + "products/" + id)
-      .then((res) => {
-        alert("delete success");
-        setShow(false)
-        })
-      .catch((err) => {
-        alert("delete failed");
-        setShow(false)
-      });
+    dispatch(deleteProduct(id,setShow))
   };
   
   if (modaltype === "create") {
